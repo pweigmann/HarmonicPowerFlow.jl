@@ -1,0 +1,4 @@
+name = "HarmonicPowerFlow"
+uuid = "86181a9d-c058-48c5-9890-3e968e8a8777"
+authors = ["Pascal Weigmann <p.weigmann@posteo.de>"]
+version = "0.1.0"
