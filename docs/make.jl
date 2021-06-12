@@ -12,5 +12,5 @@ makedocs(
 
 deploydocs(
     repo = "github.com/pweigmann/HarmonicPowerFlow.jl.git",
-    deploy_config = Documenter.GitHubActions()
+    deploy_config = Documenter.GitHubActions("github.com/pweigmann/HarmonicPowerFlow.jl.git", "push", "refs/heads/master")
 )
