@@ -317,6 +317,10 @@ function update_harmonic_voltages!(u, x, harmonics, n)
 end
 
 
+"""
+    hpf(net, settings)
+
+Solve the harmonic power flow problem for a given power grid and settings."""
 function hpf(net, settings)
     LY = admittance_matrices(net, settings.harmonics)
     u = pf(net.nodes, settings, LY)
