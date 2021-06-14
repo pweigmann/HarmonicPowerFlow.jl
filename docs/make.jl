@@ -14,4 +14,5 @@ makedocs(
 
 deploydocs(
     repo = "github.com/pweigmann/HarmonicPowerFlow.jl.git",
-    devbranch = "main")
+    devbranch = "main"
+    )
