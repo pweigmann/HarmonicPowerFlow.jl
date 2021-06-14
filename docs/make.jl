@@ -1,6 +1,8 @@
 using Documenter 
 using HarmonicPowerFlow
 
+push!(LOAD_PATH,"../src/")
+
 makedocs(
     modules = [HarmonicPowerFlow],
     authors = "Pascal Weigmann",
@@ -10,4 +12,7 @@ makedocs(
         "Conventions" => "conventions.md"
     ])
 
-deploydocs(repo = "github.com/pweigmann/HarmonicPowerFlow.jl.git")
+deploydocs(
+    repo = "github.com/pweigmann/HarmonicPowerFlow.jl.git",
+    devbranch = "main"
+    )
