@@ -1,5 +1,3 @@
-push!(LOAD_PATH, ".../src/")
-
 using Documenter 
 using HarmonicPowerFlow
 
@@ -12,7 +10,4 @@ makedocs(
         "Conventions" => "conventions.md"
     ])
 
-deploydocs(
-    repo = "github.com/pweigmann/HarmonicPowerFlow.jl.git",
-    deploy_config = Documenter.GitHubActions("github.com/pweigmann/HarmonicPowerFlow.jl.git", "push", "refs/heads/master")
-)
+deploydocs(repo = "github.com/pweigmann/HarmonicPowerFlow.jl.git")
