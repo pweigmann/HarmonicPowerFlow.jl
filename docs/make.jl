@@ -1,4 +1,4 @@
-using Documenter 
+using Documenter
 using HarmonicPowerFlow
 
 push!(LOAD_PATH,"../src/")
@@ -10,6 +10,7 @@ makedocs(
     pages = [
         "General" => "index.md"
         "Conventions" => "conventions.md"
+        "Functions" => "functions.md"
     ])
 
 deploydocs(

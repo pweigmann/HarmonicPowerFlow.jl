@@ -49,10 +49,17 @@ function init_voltages(nodes, settings)
 end
 
 
+"""
+    fund_state_vec(u)
+
+Take the voltage DataFrame and return a complex vector.
+
+Note: sorting of values. For the fundamental state vector voltage phase comes first, then magnitude.
+"""
 function fund_state_vec(u)
     xϕ = u[1].ϕ[2:end]
     xv = u[1].v[2:end]
-    vcat(xϕ, xv)  # note: phase first
+    vcat(xϕ, xv) 
 end
 
 
