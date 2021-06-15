@@ -8,8 +8,8 @@ makedocs(
     authors = "Pascal Weigmann",
     sitename ="HarmonicPowerFlow.jl",
     pages = [
-        "General" => "index.md"
-        "Conventions" => "conventions.md"
+        "General" => "index.md",
+        "Conventions" => "conventions.md",
         "Functions" => "functions.md"
     ])
 
