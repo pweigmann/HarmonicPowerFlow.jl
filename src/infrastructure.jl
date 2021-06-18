@@ -3,14 +3,18 @@ using CSV
 
 # Structs
 struct PowerGrid
-    nodes
-    lines
-    m
-    n
+    nodes::DataFrame
+    lines::DataFrame
+    m::Int
+    n::Int
 end
 
 
-# Functions
+"""
+    init_power_grid(nodes, lines)
+
+Create a PowerGrid struct from nodes and lines DataFrames. 
+"""
 function init_power_grid(nodes::DataFrame, lines::DataFrame)
     m = minimum(nodes[nodes[:,"type"] .== "nonlinear",:].ID)  # number of linear nodes
     n = size(nodes, 1)  # total number of nodes
@@ -28,7 +32,12 @@ function import_lines_from_csv(filename)
     CSV.read(filename * "_lines.csv", DataFrame)
 end
 
+"""
+   create_nodes_manually()
 
+Manually create a nodes DataFrame. 
+
+Note that linear nodes are added first, then nonlinear ones. First node contains the slack bus, which is also the only node that currently is allowed to have a shunt admittance."""
 function create_nodes_manually()
     DataFrame(
         ID = 1:5, 

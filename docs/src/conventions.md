@@ -13,6 +13,7 @@ NE | Norton Equivalent(s)
 SMPS | Switched-mode power supply
 NR | Newton-Raphson (algorithm)
 THD | Total Harmonic Distortion
+RMS | Root Mean Square
 
 ## Nomenclatur
 

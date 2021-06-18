@@ -9,3 +9,5 @@ coupled_small = init_settings(true, [1, 3, 5])
 
 # run harmonic power flow
 u, err_h_final, n_iter_h = hpf(net2, coupled_small)
+
+THD = HarmonicPowerFlow.THD(u, net2.nodes, coupled_small.harmonics)
