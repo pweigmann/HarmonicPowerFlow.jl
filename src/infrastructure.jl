@@ -13,18 +13,27 @@ end
 """
     init_power_grid(nodes, lines)
 
-Create a PowerGrid struct from nodes and lines DataFrames. 
+Create a PowerGrid struct from nodes and lines DataFrames and converts all quantities to the p.u. system. 
 """
-function init_power_grid(nodes::DataFrame, lines::DataFrame)
+function init_power_grid(nodes::DataFrame, lines::DataFrame, settings)
     m = minimum(nodes[nodes[:,"type"] .== "nonlinear",:].ID)  # number of linear nodes
     n = size(nodes, 1)  # total number of nodes
 
+    # convert quantities to p.u. system
+    nodes.S = nodes.S./settings.base_power
+    nodes.P = nodes.P./settings.base_power
+    nodes.Q = nodes.Q./settings.base_power
+    nodes.X_shunt = nodes.X_shunt./settings.base_impedance
+
+    lines.R = lines.R./settings.base_impedance
+    lines.X = lines.X./settings.base_impedance
+    
     return PowerGrid(nodes, lines, m, n)
 end
 
 
 function import_nodes_from_csv(filename)
-    CSV.read(filename * "_buses.csv", DataFrame)
+    df = CSV.read(filename * "_buses.csv", DataFrame)
 end
 
 

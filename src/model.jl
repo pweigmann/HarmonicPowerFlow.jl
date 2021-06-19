@@ -63,10 +63,10 @@ function fund_state_vec(u)
 end
 
 
-function fund_mismatch(nodes, u, LY, base_power)
+function fund_mismatch(nodes, u, LY)
     LY_1 = LY[1]
     u_1 = u[1].v .* exp.(1im*u[1].ϕ)
-    s = (nodes.P + 1im*nodes.Q)/base_power
+    s = (nodes.P + 1im*nodes.Q)
     mismatch = u_1 .* conj(LY_1*u_1) + s
     f = vcat(real(mismatch[2:end]), imag(mismatch[2:end]))
     err = maximum(abs.(f))
@@ -110,7 +110,7 @@ end
 function pf(nodes, settings, LY, plt_convergence = false)
     u = init_voltages(nodes, settings)
     x_f = fund_state_vec(u)
-    f_f, err_f = fund_mismatch(nodes, u, LY, settings.base_power)
+    f_f, err_f = fund_mismatch(nodes, u, LY)
 
     n_iter_f = 0
     err_f_t = Dict()
@@ -118,7 +118,7 @@ function pf(nodes, settings, LY, plt_convergence = false)
         J_f = fund_jacobian(u, LY)
         x_f = update_state_vec!(J_f, x_f, f_f)
         u = update_fund_voltages!(u, x_f)
-        f_f, err_f = fund_mismatch(nodes, u, LY, settings.base_power)
+        f_f, err_f = fund_mismatch(nodes, u, LY)
         err_f_t[n_iter_f] = err_f
         n_iter_f += 1
     end
@@ -161,6 +161,7 @@ function import_Norton_Equivalents(nodes, settings, folder_path="devices\\")
     end
     return NE
 end
+
 
 """calculate the harmonic current injections at one node"""
 function current_injections(nodes, nodeID, u, NE, harmonics)

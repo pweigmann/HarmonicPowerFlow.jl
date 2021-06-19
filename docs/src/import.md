@@ -13,3 +13,4 @@ ID ; fromID ; toID ; R ; X
 respectively. Use SI Units and enter `nothing` if you want to leave the field `component` empty.
 
 See this [example](https://github.com/pweigmann/HarmonicPowerFlow.jl/blob/41fecd02f4d184b9d1dff49137af24e8678c13d1/examples/simple_coupled_hpf/) for reference.
+
