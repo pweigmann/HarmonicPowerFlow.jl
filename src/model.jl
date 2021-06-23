@@ -5,7 +5,9 @@ using SparseArrays
 """
     admittance_matrices(nodes, lines, harmonics)
 
-Build the nodal admittance matrices (admittance laplacian) for all harmonics. Admittance scales linearly with frequency.
+Build the nodal admittance matrices (admittance laplacian) for all harmonics. Admittance scales with frequency (X_h = X_f * h).
+
+Returns: dictionary of DataFrames LY[h]
 """
 function admittance_matrices(net, harmonics)
     LY = Dict()
@@ -19,10 +21,19 @@ function admittance_matrices(net, harmonics)
         end
         # diagonal elements
         for i in 1:net.n
-            if net.nodes.X_shunt[i] > 0 && h != 1
-                LY[h][i, i] = -sum(LY[h][i, :]) + 1/(1im*net.nodes.X_shunt[i]*h)
+            # bus shunt admittances only for harmonic frequencies
+            if net.nodes.X_sh[i] > 0 && h != 1
+                LY[h][i, i] = -sum(LY[h][i, :]) + 1/(1im*net.nodes.X_sh[i]*h)
             else
                 LY[h][i, i] = -sum(LY[h][i, :])
+            end
+            # Adding shunt admittances for each pi-model line connected to bus i
+            for line in eachrow(net.lines)
+                # check if line is connected to bus i
+                if line.fromID == i || line.toID == i
+                    LY[h][i, i] = LY[h][i, i] + 
+                    (line.G + 1im*h*line.B)/2
+                end
             end
         end
     end

@@ -23,11 +23,13 @@ function init_power_grid(nodes::DataFrame, lines::DataFrame, settings)
     nodes.S = nodes.S./settings.base_power
     nodes.P = nodes.P./settings.base_power
     nodes.Q = nodes.Q./settings.base_power
-    nodes.X_shunt = nodes.X_shunt./settings.base_impedance
+    nodes.X_sh = nodes.X_sh./settings.base_impedance
 
     lines.R = lines.R./settings.base_impedance
     lines.X = lines.X./settings.base_impedance
-    
+    lines.G = lines.G./settings.base_admittance
+    lines.B = lines.B./settings.base_admittance
+
     return PowerGrid(nodes, lines, m, n)
 end
 
@@ -53,9 +55,9 @@ function create_nodes_manually()
         type = ["slack", "PQ", "PQ", "PQ", "nonlinear"], 
         component = ["generator", "lin_load_1", "lin_load_2", nothing, "smps"],
         S = [1000, nothing, nothing, nothing, nothing],
-        X_shunt = [0.0001, 0, 0, 0, 0],
-        P1 = [nothing, 100, 100, 0, 250],
-        Q1 = [nothing, 100, 100, 0, 100])
+        P = [nothing, 100, 100, 0, 250],
+        Q = [nothing, 100, 100, 0, 100],
+        X_sh = [0.0001, 0, 0, 0, 0])
 end
 
 
@@ -64,6 +66,8 @@ function create_lines_manually()
         ID = 1:5,
         fromID = 1:5,
         toID = [2,3,4,5,1],
-        R1 = [0.01, 0.02, 0.01, 0.01, 0.01],
-        X1 = [0.01, 0.08, 0.02, 0.02, 0.02])
+        R = [0.01, 0.02, 0.01, 0.01, 0.01],
+        X = [0.01, 0.08, 0.02, 0.02, 0.02],
+        G = [0, 0, 0, 0, 0],
+        B = [0, 0, 0, 0, 0])
 end

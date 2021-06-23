@@ -8,9 +8,9 @@ using DataFrames
         type = ["slack", "PQ", "PQ", "PQ", "nonlinear"], 
         component = ["generator", "lin_load_1", "lin_load_2", "lin_load_3", "smps"],
         S = [1000, 0, 0, 0, 0],
-        X_shunt = [0.005, 0, 0, 0, 0],
         P = [0, 100, 100, 0, 250],
-        Q = [0, 100, 100, 0, 100])
+        Q = [0, 100, 100, 0, 100],
+        X_sh = [0.005, 0, 0, 0, 0])
     lines = DataFrame(
         ID = 1:5,
         fromID = 1:5,
