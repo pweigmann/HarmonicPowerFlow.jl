@@ -16,7 +16,9 @@ using DataFrames
         fromID = 1:5,
         toID = [2,3,4,5,1],
         R = [0.5, 1, 0.5, 0.5, 0.5],
-        X = [0.5, 4, 1, 1, 1])
+        X = [0.5, 4, 1, 1, 1],
+        G = [0, 0, 0 ,0 ,0],
+        B = [0, 0, 0 ,0 ,0])
     settings = HarmonicPowerFlow.init_settings(true, [1, 3, 5])
     net = HarmonicPowerFlow.init_power_grid(nodes, lines, settings)
     LY = HarmonicPowerFlow.admittance_matrices(net, [1, 3, 5])
