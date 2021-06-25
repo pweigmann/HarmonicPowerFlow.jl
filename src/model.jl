@@ -286,8 +286,8 @@ function build_harmonic_jacobian(net, settings, u, LY, NE)
             for i in m:n
                 # LY_N is one-dimensional for uncoupled case
                 LY_N = NE[net.nodes.component[i]][2]
-                IV[h*n+i, p*n+i] -= LY_N[h+1]*u_nl_norm[(i-m+1)+h*(n-m+1)]
-                IT[h*n+i, p*n+i] -= 1im*LY_N[h+1]*u_nl[(i-m+1)+h*(n-m+1)]
+                IV[h*n+i, h*n+i] -= LY_N[h+1]*u_nl_norm[(i-m+1)+h*(n-m+1)]
+                IT[h*n+i, h*n+i] -= 1im*LY_N[h+1]*u_nl[(i-m+1)+h*(n-m+1)]
             end
         end
     end
@@ -319,7 +319,7 @@ function update_harmonic_voltages!(u, x, harmonics, n)
     # slice x in half to separate voltage magnitude and phase
     xv = x[1:(length(x)÷2)]
     xϕ = x[(length(x)÷2+1):end]
-    xϕ = xϕ .% (2*π)  # ensure phase smaller 2π
+    #xϕ = xϕ .% (2*π)  # ensure phase smaller 2π
     for h in harmonics
         i = findall(harmonics .== h)[1] - 1
         if h == 1
