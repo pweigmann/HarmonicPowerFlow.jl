@@ -215,7 +215,7 @@ end
 
 function harmonic_mismatch(net, settings, u, LY, NE)
     # fundamental power mismatch at linear buses except slack
-    s = net.nodes.P[2:(net.m-1)]/settings.base_power + 1im*net.nodes.Q[2:(net.m-1)]/settings.base_power
+    s = net.nodes.P[2:(net.m-1)] + 1im*net.nodes.Q[2:(net.m-1)]
     u_i = u[1][2:(net.m-1), "v"].*exp.(1im*u[1][2:(net.m-1), "ϕ"])
     u_j = u[1][:, "v"].*exp.(1im*u[1][:, "ϕ"])
     LY_ij = LY[1][2:(net.m-1), :]
