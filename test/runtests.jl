@@ -2,6 +2,8 @@ using Test
 using HarmonicPowerFlow
 using DataFrames
 
+# test against pypsa
+
 @testset "admittance_matrices" begin
     nodes = DataFrame(
         ID = 1:5, 
