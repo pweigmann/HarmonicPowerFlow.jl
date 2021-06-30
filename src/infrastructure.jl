@@ -5,19 +5,33 @@ using CSV
 struct PowerGrid
     nodes::DataFrame
     lines::DataFrame
+    c::Int
     m::Int
     n::Int
+    # LY
 end
 
 
 """
-    init_power_grid(nodes, lines)
+    init_power_grid(nodes, lines, settings)
 
-Create a PowerGrid struct from nodes and lines DataFrames and converts all quantities to the p.u. system. 
+Create a PowerGrid struct from nodes and lines DataFrames and converts all quantities to the p.u. system.
+Indexing (c, m, n) could be done better by being based on number of nodes of certain type.
+It would make sense to also add LY to net struct.
 """
 function init_power_grid(nodes::DataFrame, lines::DataFrame, settings)
-    m = minimum(nodes[nodes[:,"type"] .== "nonlinear",:].ID)  # number of linear nodes
     n = size(nodes, 1)  # total number of nodes
+    if "PV" in nodes.type
+        c = length(nodes[nodes[:,"type"] .== "PV",:].ID) + 1  # ID of last PV bus
+    else
+        c = 1  # correct choice?
+    end
+    if "nonlinear" in nodes.type
+        m = minimum(nodes[nodes[:,"type"] .== "nonlinear",:].ID)  # ID of first nonlinear node
+    else
+        m = n + 1   # correct choice?
+        print("Warning: No nonlinear bus detected.")
+    end
 
     # convert quantities to p.u. system
     nodes.S = nodes.S./settings.base_power
@@ -30,7 +44,7 @@ function init_power_grid(nodes::DataFrame, lines::DataFrame, settings)
     lines.G = lines.G./settings.base_admittance
     lines.B = lines.B./settings.base_admittance
 
-    return PowerGrid(nodes, lines, m, n)
+    return PowerGrid(nodes, lines, c, m, n)
 end
 
 
@@ -48,7 +62,8 @@ end
 
 Manually create a nodes DataFrame. 
 
-Note that linear nodes are added first, then nonlinear ones. First node contains the slack bus, which is also the only node that currently is allowed to have a shunt admittance."""
+Note that linear nodes are added first, then nonlinear ones. 
+Within the linear ones, first add PV, then PQ nodes. First node contains the slack bus."""
 function create_nodes_manually()
     DataFrame(
         ID = 1:5, 
