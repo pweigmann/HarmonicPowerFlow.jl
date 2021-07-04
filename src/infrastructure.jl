@@ -49,12 +49,12 @@ end
 
 
 function import_nodes_from_csv(filename)
-    df = CSV.read(filename * "_buses.csv", DataFrame)
+    CSV.read(filename, DataFrame)
 end
 
 
 function import_lines_from_csv(filename)
-    CSV.read(filename * "_lines.csv", DataFrame)
+    CSV.read(filename, DataFrame)
 end
 
 """

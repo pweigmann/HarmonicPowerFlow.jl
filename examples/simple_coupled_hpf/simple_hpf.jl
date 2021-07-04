@@ -3,13 +3,13 @@ using HarmonicPowerFlow
 using Plots
 
 
-harmonics = [h for h in 1:2:19]
+harmonics = [h for h in 1:2:99]
 # settings
 coupled_small = init_settings(true, harmonics)
 
 # import nodes and lines from csv files
 net2 = init_power_grid(
-    import_nodes_from_csv("examples\\simple_coupled_hpf\\net2"), import_lines_from_csv("examples\\simple_coupled_hpf\\net2"),
+    import_nodes_from_csv("examples\\simple_coupled_hpf\\net2_buses.csv"), import_lines_from_csv("examples\\simple_coupled_hpf\\net2_lines.csv"),
     coupled_small)
 
 # run harmonic power flow

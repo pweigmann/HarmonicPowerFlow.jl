@@ -11,7 +11,7 @@ settings1 = init_settings(coupled, harmonics)
 
 # import nodes and lines from csv files
 net3 = init_power_grid(
-    import_nodes_from_csv("examples\\multiple_pv\\net3"), import_lines_from_csv("examples\\multiple_pv\\net3"),
+    import_nodes_from_csv("examples\\multiple_pv\\net3_buses.csv"), import_lines_from_csv("examples\\multiple_pv\\net3_lines.csv"),
     settings1)
 
 # run harmonic power flow

@@ -77,3 +77,7 @@ Generally harmonics will be upper indices, bus numbers and other indices lower o
 Indices $k$ and $p$ are used as to denote bus and harmonic respectively when used to form derivatives. So $\frac{\partial I_{inj, i}^h}{\partial \theta_k^p}$ is the derivative of the current injection at bus $i$ and harmonic $h$ with respect to the voltage angle $\theta$ at bus $k$ and harmonic $p$.
 
 When it comes to admittances, this means $Y_{ij}^h$ is the network admittance at harmonic $h$  between bus $i$ and $j$, while $Y_{N, i}^{hq}$ is the Norton parameter which describes the coupling of harmonics $h$ and $q$ at bus $i$.
+
+## Per-Unit System
+
+'base_voltage' is also grid voltage.
