@@ -46,13 +46,13 @@ function init_voltages(nodes, settings)
     for h in settings.harmonics
         if h == 1
             u[h] = DataFrame(
-                v = ones(size(nodes, 1))*settings.v1,
-                ϕ = ones(size(nodes, 1))*settings.ϕ1
+                v = ones(size(nodes, 1))*settings.v_f,
+                ϕ = ones(size(nodes, 1))*settings.ϕ_f
             )  
         else
             u[h] = DataFrame(
-                v = ones(size(nodes, 1))*settings.vh,
-                ϕ = ones(size(nodes, 1))*settings.ϕh
+                v = ones(size(nodes, 1))*settings.v_h,
+                ϕ = ones(size(nodes, 1))*settings.ϕ_h
             )
         end
     end

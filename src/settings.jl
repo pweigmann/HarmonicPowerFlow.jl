@@ -13,10 +13,10 @@ struct Settings
     max_iter_h::Int
 
     # voltage start values [pu]
-    v1 
-    ϕ1 
-    vh 
-    ϕh
+    v_f 
+    ϕ_f 
+    v_h 
+    ϕ_h
 
     # calculated parameters
     K::Int  # number of harmonics (without fundamental)
@@ -31,7 +31,7 @@ end
 function init_settings(coupled, harmonics; 
     base_frequency=50, base_voltage=230, base_power=1000, 
     thresh_f = 1e-6, max_iter_f = 30, thresh_h=1e-4, max_iter_h=50,
-    v1=1, ϕ1 = 0, vh=0.1, ϕh=0)
+    v_f=1, ϕ_f = 0, v_h=0.1, ϕ_h=0)
 
     K = length(harmonics) - 1
     K1 = length(harmonics)
@@ -44,6 +44,6 @@ function init_settings(coupled, harmonics;
     Settings(
         coupled, harmonics, base_frequency, base_voltage, base_power, 
         thresh_f, thresh_h, max_iter_f, max_iter_h, 
-        v1, ϕ1, vh, ϕh, 
+        v_f, ϕ_f, v_h, ϕ_h, 
         K, K1, base_current, base_admittance, base_impedance)
 end
