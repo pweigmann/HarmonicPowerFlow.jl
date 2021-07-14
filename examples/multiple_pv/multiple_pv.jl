@@ -4,7 +4,7 @@ using Plots
 using LinearAlgebra
 
 
-harmonics = [h for h in 1:2:5]
+harmonics = [h for h in 1:2:51]
 # settings
 coupled = false
 settings1 = init_settings(coupled, harmonics)
@@ -17,13 +17,10 @@ net3 = init_power_grid(
 # run harmonic power flow
 u, err_h_final, n_iter_h = hpf(net3, settings1)
 
-THD = HarmonicPowerFlow.THD(u, net3.nodes, settings1.harmonics)
+THD = HarmonicPowerFlow.THD(u)
 
 # show barplot of harmonics at bus 4
-bar(harmonics, [u[h][4, "v"] for h in harmonics], ticks = harmonics, label = "Harmonic voltages at bus 4", title = "THD = "*string(round(THD.THD_F[4]; digits= 3)))
-
-# show barplot of harmonics at bus 3
-bar(harmonics, [u[h][3, "v"] for h in harmonics], ticks = harmonics, label = "Harmonic voltages at bus 3", title = "THD = "*string(round(THD.THD_F[3]; digits= 3)))
+HarmonicPowerFlow.barplot_THD(u, 4, h_max= 41)
 
 # Analyze Norton parameters
 NE = HarmonicPowerFlow.import_Norton_Equivalents(net3.nodes, settings1)

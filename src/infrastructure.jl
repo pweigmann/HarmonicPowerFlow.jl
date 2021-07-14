@@ -12,6 +12,8 @@ struct PowerGrid
 end
 
 
+# Functions
+
 """
     init_power_grid(nodes, lines, settings)
 
