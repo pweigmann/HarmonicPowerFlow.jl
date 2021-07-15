@@ -34,7 +34,7 @@ function limits(u, nodeID)
     met_EN50160 = collect(v .< limit_EN50160)
     met_EN61000 = collect(v .< limit_EN61000)
     
-    if all(met_EN50160) && all(met_EN6100)
+    if all(met_EN50160) && all(met_EN61000)
         println("Harmonic limits met at node "*string(nodeID))
     else
         println("Harmonic limits not met at node "*string(nodeID)*"! Check DataFrame for details.")

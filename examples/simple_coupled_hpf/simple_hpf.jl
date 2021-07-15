@@ -18,5 +18,5 @@ u, err_h_final, n_iter_h = hpf(net2, coupled_small)
 THD = HarmonicPowerFlow.THD(u)
 
 # show barplot of harmonics at bus 4
-HarmonicPowerFlow.barplot(u, 4)
+HarmonicPowerFlow.barplot_THD(u, 4, h_max= 41)
 

@@ -157,10 +157,12 @@ function import_Norton_Equivalents(nodes, settings, folder_path="devices\\")
         NE_device = hcat(NE_df[:,1:2], vals)
         # filter columns for considered harmonics
         NE_device = NE_device[:, Between(begin, string(maximum(settings.harmonics)*settings.base_frequency))]
-        # --> CHECK if this works as intended
 
         # change to pu system and choose if coupled 
         if settings.coupled
+            if maximum(settings.harmonics) != Int(parse(Int, names(NE_df)[end])/settings.base_frequency)
+                println("Warning! Inprecise results expected, as coupled method is being used but not the full spectrum taken into account.")
+            end
             I_N = Array(NE_device[NE_device.Parameter .== "I_N_c", 3:end])/settings.base_current
             LY_N_full = NE_device[NE_device.Parameter .== "Y_N_c", 2:end]
             LY_N = Array(LY_N_full[LY_N_full.Frequency .<= maximum(settings.harmonics)*settings.base_frequency, 2:end])/settings.base_admittance
