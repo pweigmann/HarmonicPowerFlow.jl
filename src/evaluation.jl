@@ -8,7 +8,9 @@ Calculate the Total Harmonic Distortion at all nodes.
 THD is a measure for the amount of voltage distortion present at a node. 
 This function calculates two alternative definitions 
     - THD_F: relative to fundamental, more commonly used and 
-    - THD_R: RMS, relative to all frequencies.
+    - THD_R: RMS, relative to all frequencies
+    - THD_40: relative to fundamental, only until h = 40 (or 39) as used by
+        standard EN 61000.
 """
 function THD(u)
     harmonics = sort(collect(keys(u)))
@@ -17,6 +19,8 @@ function THD(u)
     for ID in 1:size(u[1], 1)
         THD[ID, "THD_F"] = sqrt(sum([u[h].v[ID]^2 for h in harmonics[2:end]]))./u[1].v[ID]
         THD[ID, "THD_R"] = sqrt(sum([u[h].v[ID]^2 for h in harmonics[2:end]]))./sqrt(sum([u[h].v[ID]^2 for h in harmonics]))
+        harmonics_40 = harmonics[harmonics.<=40]
+        THD[ID, "THD_40"] = sqrt(sum([u[h].v[ID]^2 for h in harmonics_40[2:end]]))./u[1].v[ID]
     end
     return THD
 end
@@ -40,12 +44,12 @@ function limits(u, nodeID)
         println("Harmonic limits not met at node "*string(nodeID)*"! Check DataFrame for details.")
     end
 
-    THD = HarmonicPowerFlow.THD(u).THD_F[nodeID]
+    THD_40 = HarmonicPowerFlow.THD(u).THD_40[nodeID]
 
-    if THD < 0.08
-        println("THD at node "*string(nodeID)*" within limits (< 8%).")
+    if THD_40 < 0.08
+        println("THD_40 at node "*string(nodeID)*" within limits (< 8%).")
     else
-        println("THD at node "*string(nodeID)*" exceeds limits (> 8%)!")
+        println("THD_40 at node "*string(nodeID)*" exceeds limits (> 8%)!")
     end
 
     DataFrame(v=v, within_EN50160 = met_EN50160, within_EN61000=met_EN61000)
