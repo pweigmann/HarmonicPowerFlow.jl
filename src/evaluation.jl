@@ -15,7 +15,8 @@ This function calculates two alternative definitions
 function THD(u)
     harmonics = sort(collect(keys(u)))
     THD = DataFrame(THD_F = zeros(size(u[1], 1)), 
-                    THD_R = zeros(size(u[1], 1)))
+                    THD_R = zeros(size(u[1], 1)),
+                    THD_40 = zeros(size(u[1], 1)))
     for ID in 1:size(u[1], 1)
         THD[ID, "THD_F"] = sqrt(sum([u[h].v[ID]^2 for h in harmonics[2:end]]))./u[1].v[ID]
         THD[ID, "THD_R"] = sqrt(sum([u[h].v[ID]^2 for h in harmonics[2:end]]))./sqrt(sum([u[h].v[ID]^2 for h in harmonics]))

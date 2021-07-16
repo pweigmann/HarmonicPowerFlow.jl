@@ -5,3 +5,6 @@ examples/simple_coupled_hpf/debugging.jl
 examples/berlin_urban/
 examples/berlin_suburban/
 examples/load_aggregation/
+examples/simple_coupled_hpf/minimal_test_Mon_m2_2x.csv
+examples/simple_coupled_hpf/minimal_test_Mon_m2.csv
+examples/simple_coupled_hpf/minimal_test_Mon_m2_10x.csv
