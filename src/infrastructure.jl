@@ -13,7 +13,6 @@ end
 
 
 # Functions
-
 """
     init_power_grid(nodes, lines, settings)
 
@@ -58,6 +57,7 @@ end
 function import_lines_from_csv(filename)
     CSV.read(filename, DataFrame)
 end
+
 
 """
    create_nodes_manually()

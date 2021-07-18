@@ -7,16 +7,16 @@ struct Settings
     base_power::Number  # in W, default: 1000
 
     # algorithm parameters
-    thresh_f
-    thresh_h
-    max_iter_f::Int
-    max_iter_h::Int
+    thresh_f::Number  # default: 1e-6
+    thresh_h::Number  # default: 1e-4
+    max_iter_f::Int  # default: 30
+    max_iter_h::Int  # default: 50
 
     # voltage start values [pu]
-    v_f 
-    ϕ_f 
-    v_h 
-    ϕ_h
+    v_f::Number  # default: 1
+    ϕ_f::Number  # default: 0 
+    v_h::Number  # default: 0.1
+    ϕ_h::Number  # default: 0
 
     # calculated parameters
     K::Int  # number of harmonics (without fundamental)

@@ -1,22 +1,26 @@
-using Plots
+using StatsPlots
 using LinearAlgebra
 
 
 """ Barplot of harmonic voltage magnitude at one bus """
-function barplot_THD(u, nodeID; h_max=0)
+function barplot_THD(u, nodeID; h_min=1, h_max=0, yticks=0:0.1:1)
     if h_max == 0
         h_max = maximum(keys(u))
     end
     h_max_idx = Int((h_max+1)/2)
-    x = sort(collect(keys(u)))[1:h_max_idx]
+    h_min_idx = Int((h_min+1)/2)
+    x = sort(collect(keys(u)))[h_min_idx:h_max_idx]
+
+
     y = [u[h][nodeID, "v"] for h in x]
+    y_max = maximum(y)
 
     THD = HarmonicPowerFlow.THD(u)
     bar(x, y, 
         xticks = x,
-        yticks = 0:0.2:1,
+        yticks = yticks,
         xlabel = "Harmonic Frequency", 
-        ylabel = "V [pu]",
+        ylabel = "|V| [pu]",
         label = "Harmonic voltages at bus 4", 
         title = "THD = "*string(round(100*THD.THD_F[nodeID]; digits= 2))*"%")
 end
