@@ -22,7 +22,7 @@ THD = HarmonicPowerFlow.THD(u)
 # show barplot of harmonics at bus 4
 HarmonicPowerFlow.barplot_THD(u, 4, h_max= 41)
 
-# Analyze Norton parameters
+# Analyze NE parameters
 NE = HarmonicPowerFlow.import_Norton_Equivalents(net3.nodes, settings1)
 l = @layout [a{0.66w}  b{1h}]
 if coupled
