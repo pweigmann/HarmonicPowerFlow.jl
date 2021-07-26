@@ -8,9 +8,9 @@ Calculate the Total Harmonic Distortion at all nodes.
 THD is a measure for the amount of voltage distortion present at a node. 
 This function calculates two alternative definitions 
 
-- THD\_F: relative to fundamental, more commonly used and 
-- THD\_R: RMS, relative to all frequencies
-- THD\_40: relative to fundamental, only until h = 40 (or $39$) as used by
+- THD\\_F: relative to fundamental, more commonly used and 
+- THD\\_R: RMS, relative to all frequencies
+- THD\\_40: relative to fundamental, only until h = 40 (or 39) as used by
     standard EN 61000.
 """
 function THD(u)

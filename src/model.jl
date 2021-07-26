@@ -8,7 +8,7 @@ using SparseArrays
 
 Build the nodal admittance matrices (admittance laplacian) for all harmonics. 
 
-Admittance scales with frequency: `` X\_h = X\_f * h``. Return a dictionary of `DataFrames`.
+Admittance scales with frequency: X_h = X_f * h. Return a dictionary of DataFrames.
 """
 function admittance_matrices(net, harmonics)
     LY = Dict()
@@ -180,7 +180,7 @@ end
 """
     import_Norton_Equivalents(nodes, settings, folder_path="devices\\")
 
-Import NE parameters for all nonlinear devices in `nodes` from folder `\devices`."""
+Import NE parameters for all nonlinear devices in nodes from folder devices."""
 function import_Norton_Equivalents(nodes, settings, folder_path="devices\\")
     NE = Dict()
     nl_components = unique(nodes[nodes.type .== "nonlinear", "component"])
