@@ -32,7 +32,7 @@ end
 """ 
     heatmap_NE(nodes, settings; save=png)
 
-Export heatmap indicating magnitude of Norton equivalent parameters tp .png or .pdf.
+Export heatmap indicating magnitude of Norton equivalent parameters tp `.png` or `.pdf`.
 """
 function heatmap_NE(nodes, settings; save="png")
     harmonics = settings.harmonics
