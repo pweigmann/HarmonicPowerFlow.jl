@@ -8,7 +8,7 @@ using SparseArrays
 
 Build the nodal admittance matrices (admittance laplacian) for all harmonics. 
 
-Admittance scales with frequency (X_h = X_f * h). Return a dictionary of DataFrames LY[h].
+Admittance scales with frequency: `` X\_h = X\_f * h``. Return a dictionary of `DataFrames`.
 """
 function admittance_matrices(net, harmonics)
     LY = Dict()
@@ -45,7 +45,7 @@ end
 """
     init_voltages(nodes, settings)
 
-Initialize voltages for all nodes and harmonics using guesses from on settings.
+Initialize voltages for all nodes and harmonics using guesses from on `Settings`.
 """
 function init_voltages(nodes, settings)
     u = Dict()
@@ -69,7 +69,7 @@ end
 """
     fund_state_vec(net, u)
 
-Take the voltage DataFrame and return a vector of voltage phases and magnitudes.
+Take the voltage DataFrame `u` and return a vector of voltage phases and magnitudes.
 """
 function fund_state_vec(net, u)
     xϕ = u[1].ϕ[2:end]
@@ -134,7 +134,7 @@ end
 """
     update_fund_voltages!(net, u, x)
 
-Write new voltages from x to u.
+Write new voltages from `x` to `u`.
 """
 function update_fund_voltages!(net, u, x)
     u[1].ϕ[2:end] = x[1:(net.n-1)]
@@ -146,7 +146,7 @@ end
 """
     pf(net, settings, LY, plt_convergence = false)
 
-Perform fundamental power flow, iterate until mismatch smaller than threshold.
+Perform fundamental power flow, iterate until mismatch is smaller than threshold.
 """
 function pf(net, settings, LY, plt_convergence = false)
     # initialization
@@ -180,7 +180,7 @@ end
 """
     import_Norton_Equivalents(nodes, settings, folder_path="devices\\")
 
-Import NE parameters for all nonlinear devices in "nodes" from folder devices."""
+Import NE parameters for all nonlinear devices in `nodes` from folder `\devices`."""
 function import_Norton_Equivalents(nodes, settings, folder_path="devices\\")
     NE = Dict()
     nl_components = unique(nodes[nodes.type .== "nonlinear", "component"])
@@ -263,7 +263,7 @@ end
 """
     harmonic_mismatch(net, settings, u, LY, NE)
 
-Combine current and power mismatch to construct harmonic mismatch vector.
+Combine current and power mismatch to construct harmonic mismatch vector `f`.
 """
 function harmonic_mismatch(net, settings, u, LY, NE)
     # fundamental power mismatch at linear nodes except slack
@@ -286,7 +286,7 @@ end
 """
     harmonic_state_vec(net, u, harmonics)
 
-Construct harmonic state vector from fundamental and harmonic voltages.
+Construct harmonic state vector `x` from fundamental and harmonic voltages.
 """
 function harmonic_state_vec(net, u, harmonics)
     # fundamental voltages, crop slack and magnitude for PV nodes
@@ -304,7 +304,7 @@ end
 """
     build_harmonic_jacobian(net, settings, u, LY, NE)
 
-Construct harmonic Jacobian containing all derivatives of power and current mismatches wrt voltages from harmonic state vector.
+Construct harmonic Jacobian `J` containing all derivatives of power and current mismatches wrt voltages from harmonic state vector.
 """
 function build_harmonic_jacobian(net, settings, u, LY, NE)
     m = net.m
@@ -394,7 +394,7 @@ end
 """
     update_fund_voltages!(net, u, x, settings)
 
-Write new voltages from x to u for all harmonics.
+Write new voltages from `x` to `u` for all harmonics.
 """
 function update_harmonic_voltages!(net, u, x, settings)
     n = net.n
@@ -427,7 +427,7 @@ end
 """
     hpf(net, settings)
 
-Solve the harmonic power flow problem for a given power grid and settings."""
+Solve the harmonic power flow problem for a given `PowerGrid` and `Settings`."""
 function hpf(net, settings)
     LY = admittance_matrices(net, settings.harmonics)
     u = pf(net, settings, LY)
