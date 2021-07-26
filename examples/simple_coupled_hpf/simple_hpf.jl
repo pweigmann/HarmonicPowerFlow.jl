@@ -1,6 +1,6 @@
 # simple example of a harmonic power flow execution 
 using HarmonicPowerFlow
-using Plots
+using StatsPlots
 
 
 harmonics = [h for h in 1:2:21]

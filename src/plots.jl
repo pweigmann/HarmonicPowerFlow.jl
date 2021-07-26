@@ -2,7 +2,11 @@ using StatsPlots
 using LinearAlgebra
 
 
-""" Barplot of harmonic voltage magnitude at one bus """
+""" 
+    barplot_THD(u, nodeID; h_min=1, h_max=0, yticks=0:0.1:1)
+
+Barplot of harmonic voltage magnitudes at one node.
+"""
 function barplot_THD(u, nodeID; h_min=1, h_max=0, yticks=0:0.1:1)
     if h_max == 0
         h_max = maximum(keys(u))
@@ -13,7 +17,6 @@ function barplot_THD(u, nodeID; h_min=1, h_max=0, yticks=0:0.1:1)
 
 
     y = [u[h][nodeID, "v"] for h in x]
-    y_max = maximum(y)
 
     THD = HarmonicPowerFlow.THD(u)
     bar(x, y, 
@@ -21,13 +24,17 @@ function barplot_THD(u, nodeID; h_min=1, h_max=0, yticks=0:0.1:1)
         yticks = yticks,
         xlabel = "Harmonic Frequency", 
         ylabel = "|V| [pu]",
-        label = "Harmonic voltages at bus 4", 
+        label = "Harmonic voltages at node 4", 
         title = "THD = "*string(round(100*THD.THD_F[nodeID]; digits= 2))*"%")
 end
 
 
-""" Heatmap indicating magnitude of Norton Equivalent parameters """
-function heatmap_NE(nodes, settings; save=false)
+""" 
+    heatmap_NE(nodes, settings; save=png)
+
+Export heatmap indicating magnitude of Norton equivalent parameters tp .png or .pdf.
+"""
+function heatmap_NE(nodes, settings; save="png")
     harmonics = settings.harmonics
     NE = HarmonicPowerFlow.import_Norton_Equivalents(nodes, settings)
     l = @layout [a{0.66w}  b{1h}]

@@ -1,4 +1,5 @@
 # Structs
+""" Struct containing simulation settings."""
 struct Settings
     coupled::Bool  # choose coupled or uncoupled Norton Equivalent model
     harmonics::Array  # only uneven harmonics, must contain "1", example: [1,3,5,7]
@@ -6,7 +7,7 @@ struct Settings
     base_voltage::Number  # in V, default: 230
     base_power::Number  # in W, default: 1000
 
-    # algorithm parameters
+    # NR algorithm parameters
     thresh_f::Number  # default: 1e-6
     thresh_h::Number  # default: 1e-4
     max_iter_f::Int  # default: 30
@@ -28,6 +29,24 @@ end
 
 
 # Functions
+"""
+    init_settings(coupled, harmonics; ...)
+
+Initialize settings struct. 
+    
+Default values:
+- base_frequency=50
+- base_voltage=230 
+- base_power=1000 
+- thresh_f = 1e-6 
+- max_iter_f = 30 
+- thresh_h=1e-4
+- max_iter_h=50
+- v_f=1
+- ϕ_f = 0 
+- v_h=0.1 
+- ϕ_h=0
+"""
 function init_settings(coupled, harmonics; 
     base_frequency=50, base_voltage=230, base_power=1000, 
     thresh_f = 1e-6, max_iter_f = 30, thresh_h=1e-4, max_iter_h=50,

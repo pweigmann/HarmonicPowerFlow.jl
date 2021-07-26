@@ -2,12 +2,13 @@ using DataFrames
 using CSV
 using SparseArrays
 
+
 """
     admittance_matrices(nodes, lines, harmonics)
 
-Build the nodal admittance matrices (admittance laplacian) for all harmonics. Admittance scales with frequency (X_h = X_f * h).
+Build the nodal admittance matrices (admittance laplacian) for all harmonics. 
 
-Returns: dictionary of DataFrames LY[h]
+Admittance scales with frequency (X_h = X_f * h). Return a dictionary of DataFrames LY[h].
 """
 function admittance_matrices(net, harmonics)
     LY = Dict()
@@ -21,15 +22,15 @@ function admittance_matrices(net, harmonics)
         end
         # diagonal elements
         for i in 1:net.n
-            # bus shunt admittances only for harmonic frequencies
+            # node shunt admittances only for harmonic frequencies
             if net.nodes.X_sh[i] > 0 && h != 1
                 LY[h][i, i] = -sum(LY[h][i, :]) + 1/(1im*net.nodes.X_sh[i]*h)
             else
                 LY[h][i, i] = -sum(LY[h][i, :])
             end
-            # Adding shunt admittances for each pi-model line connected to bus i
+            # Adding shunt admittances for each pi-model line connected to node i
             for line in eachrow(net.lines)
-                # check if line is connected to bus i
+                # check if line is connected to node i
                 if line.fromID == i || line.toID == i
                     LY[h][i, i] = LY[h][i, i] + 
                     (line.G + 1im*h*line.B)/2
@@ -41,6 +42,11 @@ function admittance_matrices(net, harmonics)
 end
 
 
+"""
+    init_voltages(nodes, settings)
+
+Initialize voltages for all nodes and harmonics using guesses from on settings.
+"""
 function init_voltages(nodes, settings)
     u = Dict()
     for h in settings.harmonics
@@ -61,11 +67,9 @@ end
 
 
 """
-    fund_state_vec(u)
+    fund_state_vec(net, u)
 
-Take the voltage DataFrame and return a complex vector.
-
-Note: sorting of values. For the fundamental state vector voltage phase comes first, then magnitude.
+Take the voltage DataFrame and return a vector of voltage phases and magnitudes.
 """
 function fund_state_vec(net, u)
     xϕ = u[1].ϕ[2:end]
@@ -74,6 +78,11 @@ function fund_state_vec(net, u)
 end
 
 
+"""
+    fund_mismatch(net, u, LY)
+
+Evaluate active and reactive power mismatch at fundamental frequency.
+"""
 function fund_mismatch(net, u, LY)
     LY_1 = LY[1]
     u_1 = u[1].v .* exp.(1im*u[1].ϕ)
@@ -85,12 +94,19 @@ function fund_mismatch(net, u, LY)
 end
 
 
-function fund_jacobian(net, u, LY) 
+"""
+    fund_jacobian(net, u, LY)
+
+Construct fundamental Jacobian, containing powers derived wrt voltages.
+"""
+function fund_jacobian(net, u, LY)
+    # helpful definitions for Jacobian construction
     u_1 = u[1].v .* exp.(1im*u[1].ϕ)
     i_diag = spdiagm(sparse(LY[1] * u_1))
     u_1_diag = spdiagm(u_1)
     u_1_diag_norm = spdiagm(u_1./abs.(u_1))
 
+    # complex power mismatch derivatives
     dSdϕ = 1im*u_1_diag*conj(i_diag - LY[1]*u_1_diag)
     dSdv = u_1_diag_norm*conj(i_diag) + u_1_diag*conj(LY[1]*u_1_diag_norm)
 
@@ -105,12 +121,21 @@ function fund_jacobian(net, u, LY)
 end
 
 
+"""
+    update_state_vec!(J, x, f)
+
+Perform Newton-Raphson iteration and update the fundamental state vector.
+"""
 function update_state_vec!(J, x, f)
-    x - J\f  # Newton-Raphson iteration
-    # -> could try using NLsolve.jl
+    x - J\f
 end
 
 
+"""
+    update_fund_voltages!(net, u, x)
+
+Write new voltages from x to u.
+"""
 function update_fund_voltages!(net, u, x)
     u[1].ϕ[2:end] = x[1:(net.n-1)]
     u[1].v[(net.c+1):end] = x[net.n:end]
@@ -118,7 +143,13 @@ function update_fund_voltages!(net, u, x)
 end
 
 
+"""
+    pf(net, settings, LY, plt_convergence = false)
+
+Perform fundamental power flow, iterate until mismatch smaller than threshold.
+"""
 function pf(net, settings, LY, plt_convergence = false)
+    # initialization
     u = init_voltages(net.nodes, settings)
     x_f = fund_state_vec(net, u)
     f_f, err_f = fund_mismatch(net, u, LY)
@@ -130,7 +161,7 @@ function pf(net, settings, LY, plt_convergence = false)
         x_f = update_state_vec!(J_f, x_f, f_f)
         u = update_fund_voltages!(net, u, x_f)
         f_f, err_f = fund_mismatch(net, u, LY)
-        err_f_t[n_iter_f] = err_f
+        err_f_t[n_iter_f] = err_f  # currently not returned
         n_iter_f += 1
     end
 
@@ -146,7 +177,10 @@ end
 
 
 # Harmonic Power Flow functions
-"""Import Norton Equivalent parameters for all nonlinear devices in "nodes" from folder"""
+"""
+    import_Norton_Equivalents(nodes, settings, folder_path="devices\\")
+
+Import NE parameters for all nonlinear devices in "nodes" from folder devices."""
 function import_Norton_Equivalents(nodes, settings, folder_path="devices\\")
     NE = Dict()
     nl_components = unique(nodes[nodes.type .== "nonlinear", "component"])
@@ -176,7 +210,12 @@ function import_Norton_Equivalents(nodes, settings, folder_path="devices\\")
 end
 
 
-"""calculate the harmonic current injections at one node"""
+"""
+    current_injections(nodes, nodeID, u, NE, harmonics)
+
+Calculate the harmonic current injections at one node.
+
+Uses coupled or uncoupled method based on dimensions of NE."""
 function current_injections(nodes, nodeID, u, NE, harmonics)
     component = nodes[nodes.ID .== nodeID, "component"][1]
     I_N, LY_N = NE[component]
@@ -191,6 +230,12 @@ function current_injections(nodes, nodeID, u, NE, harmonics)
     return i_inj
 end
 
+
+"""
+    current_balance(net, settings, u, LY, NE)
+
+Evaluate current balance at all nodes and frequencies, except linear nodes at fundamental frequency.
+"""
 function current_balance(net, settings, u, LY, NE)
     # fundamental admittance matrix for nonlinear nodes
     LY_1_nl = LY[1][net.m:end,:]
@@ -215,8 +260,13 @@ function current_balance(net, settings, u, LY, NE)
 end
 
 
+"""
+    harmonic_mismatch(net, settings, u, LY, NE)
+
+Combine current and power mismatch to construct harmonic mismatch vector.
+"""
 function harmonic_mismatch(net, settings, u, LY, NE)
-    # fundamental power mismatch at linear buses except slack
+    # fundamental power mismatch at linear nodes except slack
     s = net.nodes.P[2:(net.m-1)] + 1im*net.nodes.Q[2:(net.m-1)]
     u_i = u[1][2:(net.m-1), "v"].*exp.(1im*u[1][2:(net.m-1), "ϕ"])
     u_j = u[1][:, "v"].*exp.(1im*u[1][:, "ϕ"])
@@ -227,14 +277,19 @@ function harmonic_mismatch(net, settings, u, LY, NE)
     di = current_balance(net, settings, u, LY, NE) 
     # harmonic mismatch vector
     f_c = vcat(ds, di) 
-    f = vcat(real(f_c), imag(f_c[(net.c):end]))  # crop PV buses
+    f = vcat(real(f_c), imag(f_c[(net.c):end]))  # crop PV nodes
     err_h = maximum(abs.(f))  
     return f, err_h
 end
 
 
+"""
+    harmonic_state_vec(net, u, harmonics)
+
+Construct harmonic state vector from fundamental and harmonic voltages.
+"""
 function harmonic_state_vec(net, u, harmonics)
-    # fundamental voltages, crop slack and magnitude for PV buses
+    # fundamental voltages, crop slack and magnitude for PV nodes
     xϕ = u[1].ϕ[2:end]
     xv = u[1].v[(net.c+1):end]
     # all voltages and angles at all harmonic frequencies 
@@ -242,16 +297,22 @@ function harmonic_state_vec(net, u, harmonics)
         xϕ = vcat(xϕ, u[h].ϕ)
         xv = vcat(xv, u[h].v)
     end
-    vcat(xϕ, xv)  # note: phase first
+    vcat(xϕ, xv)
 end   
 
 
+"""
+    build_harmonic_jacobian(net, settings, u, LY, NE)
+
+Construct harmonic Jacobian containing all derivatives of power and current mismatches wrt voltages from harmonic state vector.
+"""
 function build_harmonic_jacobian(net, settings, u, LY, NE)
     m = net.m
     n = net.n
     c = net.c
     K = settings.K
 
+    # helpful definitions for Jacobian construction
     u_vec = vcat([u[h].v .* exp.(1im*u[h].ϕ) for h in settings.harmonics]...)
     v_vec = vcat([u[h].v for h in settings.harmonics]...)
     u_diag = spdiagm(u_vec)
@@ -263,7 +324,7 @@ function build_harmonic_jacobian(net, settings, u, LY, NE)
     dIdv = LY_diag*u_norm_diag
     dIdϕ = 1im*LY_diag*u_diag
 
-    # indices of first nonlinear bus at each harmonic
+    # indices of first nonlinear node at each harmonic
     nl_idx_start = m:n:n*(K+1)
     nl_idx_all = vcat([nl:(nl+n-m) for nl in nl_idx_start]...)
     u_nl = u_vec[nl_idx_all]
@@ -275,7 +336,7 @@ function build_harmonic_jacobian(net, settings, u, LY, NE)
         for h in 0:K
             # ... and horizontally
             for p in 0:K
-                # iterating through nonlinear buses
+                # iterating through nonlinear nodes
                 for i in m:n
                     # within NE "[2]" points to LY_N
                     LY_N = NE[net.nodes.component[i]][2]
@@ -297,21 +358,26 @@ function build_harmonic_jacobian(net, settings, u, LY, NE)
         end
     end
 
+    # crop slack and PV nodes
     dIdϕ = dIdϕ[m:end, 2:end]
     dIdv = dIdv[m:end, (c+1):end]  
       
+    # helpful definitions for dS construction
     LY_1 = LY[1]
     u_1 = u[1].v .* exp.(1im*u[1].ϕ)
     i_diag = spdiagm(LY_1*u_1)
     u_diag = spdiagm(u_1)
     u_diag_norm = spdiagm(u_1./abs.(u_1))
 
+    # fundamental powers derived wrt to voltage phase and magnitude
     dS1dϕ1 = 1im*u_diag*(conj(i_diag - LY_1*u_diag))
     dS1dv1 = u_diag_norm*conj(i_diag) + u_diag*conj(LY_1*u_diag_norm)
     
+    # only fundamental power derivatives are non-zero
     dSdϕ = hcat(dS1dϕ1, zeros(n, n*K))
     dSdv = hcat(dS1dv1, zeros(n, n*K))
     
+    # crop slack and PV nodes from power derivatives
     dPdϕ = real(dSdϕ[2:(m-1), 2:end])
     dPdv = real(dSdv[2:(m-1), (c+1):end])
     dQdϕ = imag(dSdϕ[(c+1):(m-1), 2:end])
@@ -325,11 +391,16 @@ function build_harmonic_jacobian(net, settings, u, LY, NE)
 end
 
 
+"""
+    update_fund_voltages!(net, u, x, settings)
+
+Write new voltages from x to u for all harmonics.
+"""
 function update_harmonic_voltages!(net, u, x, settings)
     n = net.n
     c = net.c
 
-    # slice x (almost) in half to separate voltage magnitude and phase
+    # slice x to separate voltage magnitude and phase
     xϕ = x[1:(n*settings.K1-1)]
     xv = x[n*settings.K1:end]
 
@@ -339,6 +410,7 @@ function update_harmonic_voltages!(net, u, x, settings)
     u[1].ϕ[2:end] = xϕ[1:(n-1)]
     u[1].v[(c+1):end] = xv[1:(n-c)]
 
+    # crop slack and PV nodes
     xϕ_h = xϕ[n:end]
     xv_h = xv[(n-c+1):end]
     
@@ -386,5 +458,5 @@ function hpf(net, settings)
     elseif n_iter_h == settings.max_iter_h
         println("Maximum of ", n_iter_h, " iterations reached. Harmonic power flow did not converge.")
     end
-    return u, err_h, n_iter_h
+    return u, err_h_t, n_iter_h
 end

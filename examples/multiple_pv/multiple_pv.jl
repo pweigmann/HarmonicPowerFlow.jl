@@ -1,6 +1,6 @@
 # simple example of a harmonic power flow execution 
 using HarmonicPowerFlow
-using Plots
+using StatsPlots
 using LinearAlgebra
 
 
@@ -32,5 +32,3 @@ if coupled
 else
     Y_N = heatmap(harmonics, harmonics, diagm(vec(abs.(NE["SMPS"][2]))), ticks = harmonics, title = "Y_Norton Vector (uncoupled)", yflip=true)
 end
-
-[[h, u[h]] for h in harmonics]

@@ -28,14 +28,15 @@ end
 
 
 """
-    EN50160(u, nodeID)
+    limits(u, nodeID)
 
-Check if harmonic limits according to EN 50160 and EN 61000 are met at node."""
+Check if harmonic limits according to EN 50160 and EN 61000 are met at node.
+"""
 function limits(u, nodeID)
     h = [3, 5, 7, 9, 11, 13, 15]
     v = [u[i].v[nodeID] for i in h]
     limit_EN50160 = [0.05, 0.06, 0.05, 0.015, 0.035, 0.03, 0.005]
-    limit_EN61000 = [0.05, 0.06, 0.05, 0.015, 0.035, 0.03, 0.005]
+    limit_EN61000 = [0.05, 0.06, 0.05, 0.015, 0.035, 0.03, 0.003]
     met_EN50160 = collect(v .< limit_EN50160)
     met_EN61000 = collect(v .< limit_EN61000)
     

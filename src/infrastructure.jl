@@ -2,6 +2,7 @@ using DataFrames
 using CSV
 
 # Structs
+"""Struct containing information about nodes and lines."""
 struct PowerGrid
     nodes::DataFrame
     lines::DataFrame
@@ -17,13 +18,13 @@ end
     init_power_grid(nodes, lines, settings)
 
 Create a PowerGrid struct from nodes and lines DataFrames and converts all quantities to the p.u. system.
-Indexing (c, m, n) could be done better by being based on number of nodes of certain type.
-It would make sense to also add LY to net struct.
+
+Indexing (c, m, n) could be done better by being based on number of nodes of certain type. It could make sense to also add LY to PowerGrid struct.
 """
 function init_power_grid(nodes::DataFrame, lines::DataFrame, settings)
     n = size(nodes, 1)  # total number of nodes
     if "PV" in nodes.type
-        c = length(nodes[nodes[:,"type"] .== "PV",:].ID) + 1  # ID of last PV bus
+        c = length(nodes[nodes[:,"type"] .== "PV",:].ID) + 1  # ID of last PV node
     else
         c = 1  # correct choice?
     end
@@ -31,7 +32,7 @@ function init_power_grid(nodes::DataFrame, lines::DataFrame, settings)
         m = minimum(nodes[nodes[:,"type"] .== "nonlinear",:].ID)  # ID of first nonlinear node
     else
         m = n + 1   # correct choice?
-        print("Warning: No nonlinear bus detected.")
+        print("Warning: No nonlinear node detected.")
     end
 
     # convert quantities to p.u. system
@@ -65,7 +66,8 @@ end
 Manually create a nodes DataFrame. 
 
 Note that linear nodes are added first, then nonlinear ones. 
-Within the linear ones, first add PV, then PQ nodes. First node contains the slack bus."""
+Within the linear ones, first add PV, then PQ nodes. First node contains the slack.
+"""
 function create_nodes_manually()
     DataFrame(
         ID = 1:5, 
