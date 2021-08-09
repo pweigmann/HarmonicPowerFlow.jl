@@ -4,11 +4,11 @@ PowerGrids can only be imported from `.csv` files at the moment.
 
 The files should be named `<grid_name>_buses.csv` and `<grid_name>_lines.csv` and contain the columns
 ```
-ID ; type ; component ; S ; X_shunt ; P ; Q
+ID ; type ; component ; S ; P ; Q ; X_shunt
 ```
 and
 ```
-ID ; fromID ; toID ; R ; X
+ID ; fromID ; toID ; R ; X ; G ; B
 ```
 respectively. Use SI Units and enter `nothing` if you want to leave the field `component` empty.
 

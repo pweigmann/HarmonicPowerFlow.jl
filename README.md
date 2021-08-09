@@ -5,3 +5,7 @@
 [![CI](https://github.com/pweigmann/HarmonicPowerFlow.jl/actions/workflows/CI.yml/badge.svg)](https://github.com/pweigmann/HarmonicPowerFlow.jl/actions/workflows/CI.yml)
 [![](https://img.shields.io/badge/docs-stable-blue.svg)](https://pweigmann.github.io/HarmonicPowerFlow.jl/stable)
 [![](https://img.shields.io/badge/docs-dev-blue.svg)](https://pweigmann.github.io/HarmonicPowerFlow.jl/dev)
+
+An open source module to solve the harmonic power flow problem using Norton representation of nonlinear devices.
+
+Feel free to contribute and get in contact and check out the [documentation](https://pweigmann.github.io/HarmonicPowerFlow.jl/stable).
