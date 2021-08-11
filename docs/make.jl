@@ -11,7 +11,8 @@ makedocs(
         "General" => "index.md",
         "Conventions" => "conventions.md",
         "Functions" => "functions.md",
-        "Import" => "import.md"
+        "Import" => "import.md",
+        "Contribute" => "contribute.md"
     ])
 
 deploydocs(
