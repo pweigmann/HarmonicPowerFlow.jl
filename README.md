@@ -8,11 +8,11 @@
 
 An open source module to solve the harmonic power flow problem using Norton representation of nonlinear devices.
 
-Feel free to contribute and get in contact and check out the [documentation](https://pweigmann.github.io/HarmonicPowerFlow.jl/dev).
+Feel free to contribute and get in contact and check out the [documentation](https://pweigmann.github.io/HarmonicPowerFlow.jl/dev), which is still a work in progess.
 
 ## Disclaimer
 
-In the current state, the module does not produce trustworthy results! Further tweaks and additional validation is required. Please check out the issues and feel free to add ideas and suggestions. All contributions are highly welcome!
+In the current state, the module does not produce trustworthy results! Further tweaks and additional validation is required. Please check out the issues and feel free to add ideas and suggestions. Contributions are highly welcome!
 
 ## Future Features
 
