@@ -3,7 +3,7 @@ using HarmonicPowerFlow
 using StatsPlots
 
 
-harmonics = [h for h in 1:2:21]
+harmonics = [h for h in 1:2:101]
 # settings
 settings_c = init_settings(true, harmonics)
 settings_uc = init_settings(false, harmonics)

@@ -1,0 +1,3 @@
+ID;type;component;S;P;Q;X_sh
+1;slack;MV_net;0;0;0;0.005
+2;nonlinear;EV_4;14800;14000;4800;0
