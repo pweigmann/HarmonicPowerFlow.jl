@@ -8,4 +8,19 @@
 
 An open source module to solve the harmonic power flow problem using Norton representation of nonlinear devices.
 
-Feel free to contribute and get in contact and check out the [documentation](https://pweigmann.github.io/HarmonicPowerFlow.jl/stable).
+Feel free to contribute and get in contact and check out the [documentation](https://pweigmann.github.io/HarmonicPowerFlow.jl/dev).
+
+## Disclaimer
+
+In the current state, the module does not produce trustworthy results! Further tweaks and additional validation is required. Please check out the issues and feel free to add ideas and suggestions. All contributions are highly welcome!
+
+## Future Features
+
+The following list gives some ideas about which additions would be most beneficial to increase usability:
+
+- Modeling transformers
+- Support for nonlinear power sources (PV buses), so far only linear sources
+- Adding more devices to the library of Norton equivalent parameters
+- Alternative solvers for cases when Newton-Raphson doesn't converge
+- Load aggregation
+- ...
